@@ -22,7 +22,7 @@ def main():
             raise FileNotFoundError(sys.argv[1] + " does not exist")
         if (os.path.exists(sys.argv[2])):
             raise FileExistsError(sys.argv[2] + " already exists")
-        run()
+        run(sys.argv[1], sys.argv[2])
     except SyntaxError as e:
         print(e)
     except FileNotFoundError as e:
