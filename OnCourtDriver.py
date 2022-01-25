@@ -29,5 +29,25 @@ def main():
     except FileExistsError as e:
         print(e)
 
+def run(input_path: str, output_path: str):
+    """
+    This function is reponsible for finding all the files specified by 'input_path',
+    parsing the contents of the file, and writing the collected data to the 
+    local file system.
+
+    Preconditions:
+    --------------
+    Note that this function assumes that input_path already exists and that 
+    output_path does not exist.
+
+    Parameters:
+    -----------
+    input_path:  The input path denoting the file (or folder containing the 
+                 files) we want to parse. Note that this can be a single file or
+                 a folder containing .xlsl files.
+    output_path: The output path where we plan on storing the collected data.
+    """
+    pass
+
 if __name__ == "__main__":
     main()
