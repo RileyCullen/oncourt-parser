@@ -12,7 +12,7 @@ def main():
     """
     try:
         # Check to make sure the proper arguments were given
-        if (len(sys.argv) != 2): 
+        if (len(sys.argv) != 3): 
             raise SyntaxError("Invalid input arguments. Input command should \
                 be: python OnCourtDriver.py [input directory] [output directory")
 
