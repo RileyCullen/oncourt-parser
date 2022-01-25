@@ -68,5 +68,20 @@ def get_file_paths(input_path: str) -> list:
     else:
         return os.listdir(input_path)
 
+def parse_file(path: str) -> dict:
+    """
+    This function is responsible for parsing the .xlsx file specified by path.
+
+    Parameters:
+    -----------
+    path: A file path to the .xlsx file we want to parse.
+
+    Return Value: 
+    -------------
+    This function returns a dictionary with containing the collected data in 
+    path.
+    """
+    pass
+
 if __name__ == "__main__":
     main()
