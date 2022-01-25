@@ -22,6 +22,7 @@ def main():
             raise FileNotFoundError(sys.argv[1] + " does not exist")
         if (os.path.exists(sys.argv[2])):
             raise FileExistsError(sys.argv[2] + " already exists")
+        run()
     except SyntaxError as e:
         print(e)
     except FileNotFoundError as e:
@@ -47,7 +48,7 @@ def run(input_path: str, output_path: str):
                  a folder containing .xlsl files.
     output_path: The output path where we plan on storing the collected data.
     """
-    pass
+    files = get_file_paths(input_path)
 
 def get_file_paths(input_path: str) -> list:
     """
