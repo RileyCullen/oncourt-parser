@@ -49,5 +49,23 @@ def run(input_path: str, output_path: str):
     """
     pass
 
+def get_file_paths(input_path: str) -> list:
+    """
+    This function is reponsible for obtaining all the .xlsl files specified by
+    input_path.
+
+    Parameters:
+    -----------
+    input_path: see run() documentation.
+
+    Return Value:
+    -------------
+    Returns a list containing all of the .xlsl files to the calling function.
+    """
+    if (os.path.isfile(input_path)):
+        return [input_path]
+    else:
+        return os.listdir(input_path)
+
 if __name__ == "__main__":
     main()
