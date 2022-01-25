@@ -72,6 +72,11 @@ def parse_file(path: str) -> dict:
     """
     This function is responsible for parsing the .xlsx file specified by path.
 
+    Preconditions:
+    --------------
+    This function assumes that the file defined by path exists and is formatted
+    as specified by the OnCourt dataset standards.
+
     Parameters:
     -----------
     path: A file path to the .xlsx file we want to parse.
