@@ -1,6 +1,7 @@
 import os, sys, json
 import pandas as pd
 from parsers.OddsParser import parse_entry
+from progress_bar.ProgressBar import update_progress
 
 def main():
     """
@@ -121,6 +122,7 @@ def parse_file(path: str) -> dict:
             file_data[tournament_key] = {
                 "match_data": {}
             }
+        update_progress(i / len(df.index))
     return file_data
 
 if __name__ == "__main__":
