@@ -1,4 +1,5 @@
-import os, sys
+import os, sys, json
+import pandas as pd
 
 def main():
     """
@@ -49,6 +50,15 @@ def run(input_path: str, output_path: str):
     output_path: The output path where we plan on storing the collected data.
     """
     files = get_file_paths(input_path)
+    data_list = []
+    for file_path in files:
+        data_list.append(parse_file(file_path))
+    
+    os.mkdir(output_path)
+    for data_entry in data_list:
+        with open(output_path + '/tmp' + '.json', 'w') as fp:
+            json.dump(data_entry, fp, indent=4, ensure_ascii=True)
+
 
 def get_file_paths(input_path: str) -> list:
     """
@@ -86,7 +96,30 @@ def parse_file(path: str) -> dict:
     This function returns a dictionary with containing the collected data in 
     path.
     """
-    pass
+
+    # Read excel file and store in Pandas.DataFrame
+    df = pd.read_excel(path, engine='openpyxl', index_col=None, header=None)
+
+    # Remove first row (the header)
+    df = df.iloc[1:]
+
+    file_data = {}
+
+    for i, row in df.iterrows():
+        tournament_key = row[2]
+        if tournament_key in file_data.keys():
+            entry_key = row[0] + ' ' + row[1] + ' ' + str(row[3])
+            tmp_entry = {
+                "p1_name": row[0],
+                "p2_name": row[1],
+                "date": str(row[3]),
+            }
+            file_data[tournament_key]["match_data"][entry_key] = tmp_entry
+        else:
+            file_data[tournament_key] = {
+                "match_data": {}
+            }
+    return file_data
 
 if __name__ == "__main__":
     main()
