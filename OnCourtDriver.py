@@ -1,5 +1,6 @@
 import os, sys, json
 import pandas as pd
+from parsers.OddsParser import parse_entry
 
 def main():
     """
@@ -113,6 +114,7 @@ def parse_file(path: str) -> dict:
                 "p1_name": row[0],
                 "p2_name": row[1],
                 "date": str(row[3]),
+                "odds": parse_entry(row[14]).to_json()
             }
             file_data[tournament_key]["match_data"][entry_key] = tmp_entry
         else:
