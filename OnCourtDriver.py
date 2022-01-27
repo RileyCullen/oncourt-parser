@@ -109,19 +109,19 @@ def parse_file(path: str) -> dict:
 
     for i, row in df.iterrows():
         tournament_key = row[2]
-        if tournament_key in file_data.keys():
-            entry_key = row[0] + ' ' + row[1] + ' ' + str(row[3])
-            tmp_entry = {
-                "p1_name": row[0],
-                "p2_name": row[1],
-                "date": str(row[3]),
-                "odds": parse_entry(row[14]).to_json()
-            }
-            file_data[tournament_key]["match_data"][entry_key] = tmp_entry
-        else:
+        if tournament_key not in file_data.keys():
             file_data[tournament_key] = {
                 "match_data": {}
             }
+        entry_key = row[0] + ' ' + row[1] + ' ' + str(row[3])
+        tmp_entry = {
+            "p1_name": row[0],
+            "p2_name": row[1],
+            "date": str(row[3]),
+            "odds": parse_entry(row[14]).to_json()
+        }
+        file_data[tournament_key]["match_data"][entry_key] = tmp_entry
+
         update_progress(i / len(df.index))
     return file_data
 
