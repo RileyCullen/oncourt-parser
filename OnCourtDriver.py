@@ -53,7 +53,9 @@ def run(input_path: str, output_path: str):
     """
     files = get_file_paths(input_path)
     data_list = []
+    i = 1
     for file_path in files:
+        print("Parsing " + file_path + " (" + str(i) + "/" + str(len(files)) + ")")
         data_list.append(parse_file(file_path))
     
     os.mkdir(output_path)
