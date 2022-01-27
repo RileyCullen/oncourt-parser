@@ -1,3 +1,4 @@
+from distutils.command.clean import clean
 import os, sys, json
 import pandas as pd
 from parsers.OddsParser import parse_entry
@@ -115,17 +116,40 @@ def parse_file(path: str) -> dict:
             file_data[tournament_key] = {
                 "match_data": {}
             }
-        entry_key = row[0] + ' ' + row[1] + ' ' + str(row[3])
+        p1_name = clean_player_name(row[0])
+        p2_name = clean_player_name(row[1])
+        date = str(row[3])[0:10]
+        entry_key = p1_name + ' ' + p2_name + ' ' + date
         tmp_entry = {
-            "p1_name": row[0],
-            "p2_name": row[1],
-            "date": str(row[3]),
+            "p1_name": p1_name,
+            "p2_name": p2_name,
+            "date": date,
             "odds": parse_entry(row[14]).to_json()
         }
         file_data[tournament_key]["match_data"][entry_key] = tmp_entry
 
         update_progress(i / len(df.index))
     return file_data
+
+def clean_player_name(name: str) -> str:
+    """
+    This function is responsible for cleaning the player names found in the given
+    .xlsx file. Typically, one of the two player names will contain a number 
+    surrounded by parenthesis (e.g (3) Alan Turing). This function will remove
+    the number to just obtain the name.
+
+    Parameters:
+    -----------
+    name: The name we want to clean (note it need not have numbers in it).
+
+    Return Value:
+    -------------
+    This function returns a cleaned version of the player's name.
+    """
+    for letter in name:
+        if (letter.isdigit()):
+            return name.replace("({0}) ".format(letter), "")
+    return name
 
 if __name__ == "__main__":
     main()
