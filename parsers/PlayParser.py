@@ -2,23 +2,24 @@ import pandas as pd
 
 
 
+
 def parse_entry(entry):
-   
+
     column_names = ["currentScore", "currentSetScore", "currentMatchScore"]
     matchData = pd.DataFrame(columns = column_names)
-    MatchScoreL = 0
-    MatchScoreR = 0
+
     gameData = entry
     gameData.append("E")
-
+    MatchScoreL = 0
+    MatchScoreR = 0
     SetScore = "0-0"
-
+    
     def updateMatchScore():  
-        if (int(SetScore[0]) > int(SetScore[2])):
-            global MatchScoreL
+        nonlocal MatchScoreL
+        nonlocal MatchScoreR 
+        if (int(SetScore[0]) > int(SetScore[2])): 
             MatchScoreL += 1
-        if (int(SetScore[0]) < int(SetScore[2])):
-            global MatchScoreR 
+        if (int(SetScore[0]) < int(SetScore[2])):      
             MatchScoreR += 1
 
 
