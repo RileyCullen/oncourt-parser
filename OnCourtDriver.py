@@ -1,7 +1,8 @@
 from distutils.command.clean import clean
 import os, sys, json
 import pandas as pd
-from parsers.OddsParser import parse_entry
+from parsers.OddsParser import parse_entry as parseOdds
+from parsers.PlayParser import parse_entry as parsePlay
 from progress_bar.ProgressBar import update_progress
 
 def main():
@@ -124,7 +125,8 @@ def parse_file(path: str) -> dict:
             "p1_name": p1_name,
             "p2_name": p2_name,
             "date": date,
-            "odds": parse_entry(row[14]).to_json()
+            "odds": parseOdds(row[14]).to_json(),
+            "play": parsePlay(row[15]).to_json()
         }
         file_data[tournament_key]["match_data"][entry_key] = tmp_entry
 
