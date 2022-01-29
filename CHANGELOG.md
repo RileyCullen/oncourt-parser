@@ -1,4 +1,7 @@
 # Change Log
+## [v0.0.3] - 2022-01-28
+### Added
+* Play-by-play parser integrated into system
 ## [v0.0.2] - 2022-01-26
 ### Added
 * Progress bar type defined and implemented
