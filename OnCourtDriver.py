@@ -1,4 +1,3 @@
-from distutils.command.clean import clean
 import os, sys, json
 import pandas as pd
 from parsers.OddsParser import parse_entry as parseOdds
