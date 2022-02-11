@@ -175,7 +175,7 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                 remove_asterisk = remove_brackets.replace("*", "")
                 games = remove_asterisk.split("-")
 
-                output_df.append({
+                output_df = output_df.append({
                     "Key": key,
                     "SetNo": set_no,
                     "P1GamesWon": set_games[0],
