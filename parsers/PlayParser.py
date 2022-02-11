@@ -1,12 +1,19 @@
 import pandas as pd
 
+def parse_entry(entry: str) -> pd.DataFrame:
+    """
+    This function is responsible for parsing the play-by-play data located with
+    the OnCourt dataset. 
 
+    Parameters:
+    -----------
+    entry: A string containing play-by-play data.
 
-
-
-
-def parse_entry(entry):
-
+    Returns:
+    --------
+    A Pandas.DataFrame containing the current score, the current set score,
+    and the current match score.
+    """
     column_names = ["currentScore", "currentSetScore", "currentMatchScore"]
     matchData = pd.DataFrame(columns = column_names)
 
