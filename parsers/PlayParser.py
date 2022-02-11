@@ -15,6 +15,7 @@ def parse_entry(entry):
     MatchScoreL = 0
     MatchScoreR = 0
     SetScore = "0-0"
+    check = True
     
 
 
@@ -31,24 +32,21 @@ def parse_entry(entry):
         if "*" in token:   
             matchData_length = len(matchData)
             matchData.loc[matchData_length] = [token,SetScore, str(MatchScoreL) + "-" + str(MatchScoreR)]
-        elif token == "E" :
+            check = True
+        elif token == "End" :
             updateMatchScore()
             matchData_length = len(matchData)
-            matchData.loc[matchData_length] = ["EndGame","EndSet", str(MatchScoreL) + "-" + str(MatchScoreR)]
-            MatchScoreL = 0
-            MatchScoreR = 0
+            matchData.loc[matchData_length] = [token,SetScore, str(MatchScoreL) + "-" + str(MatchScoreR)]
+            check = True
         else:
             if token == "0-0":
                 updateMatchScore()
+            elif(check):
                 matchData_length = len(matchData)
                 matchData.loc[matchData_length] = ["EndGame",SetScore, str(MatchScoreL) + "-" + str(MatchScoreR)]
-
+                check = False
             SetScore = token
-    
     return matchData
-
-
-
 
 
 
