@@ -44,8 +44,6 @@ def parse_entry(entry):
                 matchData.loc[matchData_length] = ["EndGame",SetScore, str(MatchScoreL) + "-" + str(MatchScoreR)]
 
             SetScore = token
-
-    print(matchData.to_string())
     
     return matchData
 
