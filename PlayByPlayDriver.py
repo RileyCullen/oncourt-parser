@@ -1,7 +1,9 @@
+from re import M
 import sys, os
 import pandas as pd
 
-from OnCourtDriver import get_file_paths
+from OnCourtDriver import get_file_paths, clean_player_name
+from parsers.PlayParser import parse_entry
 
 def main():
     """
@@ -23,6 +25,8 @@ def main():
         if (os.path.exists(sys.argv[2])):
             raise FileExistsError(sys.argv[2] + " already exists")
         
+        run(sys.argv[1], sys.argv[2])
+
     except SyntaxError as e:
         print(e)
     except FileNotFoundError as e:
@@ -59,7 +63,7 @@ def run(input_path: str, output_path: str):
     
     os.mkdir(output_path)
     for data in output:
-        data.to_csv(index="false")
+        data.to_excel(output_path +"/out.xlsx", index=False)
 
 def open_file(path: str) -> pd.DataFrame:
     """
@@ -95,11 +99,96 @@ def get_play_data(df: pd.DataFrame):
     --------
     A Pandas.DataFrame containing usable data obtained from the play parser.
     """
+    frames = []
     for i, row in df.iterrows():
         # Run PlayParser
         # Call function to parse output of PlayParser
         # Add function output to output DataFrame
-        pass
+        p1_name = clean_player_name(row[0])
+        p2_name = clean_player_name(row[1])
+        date = str(row[3])[0:10]
+        entry_key = p1_name + " " + p2_name + " " + date
+
+        df_play = parse_entry(row[15])
+        frames.append(parse_play_dataframe(df_play, entry_key))
+
+    return pd.concat(frames)
+
+def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
+    """
+    This function is responsible for calculating the following entries using the 
+    output from parse_enty in PlayParser.py:
+        1. Set number
+        2. P1 games won
+        3. P2 games won
+        4. Set winner
+        5. Game number
+        6. Game winner
+        7. Point number
+        8. Point winner
+        9. Point server.
+    
+    Once this data is calculated, it will be output to the user in the form of a
+    Pandas.Dataframe.
+
+    Parameters:
+    -----------
+    df: The Pandas.DataFrame we want to analyze.
+    key: The key corresponding to the particular match that it being played.
+
+    Returns:
+    --------
+    A Pandas.DataFrame containing the above information.
+    """ 
+    output_columns = ["Key", "SetNo", "P1GamesWon", "P2GamesWon", "SetWinner", 
+        "GameNo", "GameWinner", "PointNumber", "PointWinner", "PointServer"]
+    output_df = pd.DataFrame(columns=output_columns)
+    output_df = output_df.iloc[1:]
+
+    set_no = 0
+    game_no = 0
+    point_no = 0
+    point_server = 0
+
+    for i, row in df.iterrows():
+        set_games = row[1].split("-")
+        if (len(set_games) == 2):
+            set_winner = 1 if set_games[0] > set_games[1] else 2
+            if (row[0] == "EndGame"):
+                output_df = output_df.append({
+                    "Key": key,
+                    "SetNo": set_no,
+                    "P1GamesWon": set_games[0],
+                    "P2GamesWon": set_games[1],
+                    "SetWinner": set_winner,
+                    "GameNo": game_no,
+                    "GameWinner": set_winner,
+                    "PointNumber": point_no, 
+                    "PointWinner": set_winner,
+                    "PointServer": point_server
+                }, ignore_index=True)
+                set_no += 1
+                game_no = 1
+            else:
+                remove_brackets = row[0].replace("[", "").replace("]", "")
+                point_server = 1 if (remove_brackets.index('*') == 0) else 2
+                remove_asterisk = remove_brackets.replace("*", "")
+                games = remove_asterisk.split("-")
+
+                output_df.append({
+                    "Key": key,
+                    "SetNo": set_no,
+                    "P1GamesWon": set_games[0],
+                    "P2GamesWon": set_games[1],
+                    "SetWinner": 0,
+                    "GameNo": game_no,
+                    "GameWinner": set_winner,
+                    "PointNumber": point_no, 
+                    "PointWinner": 1 if games[0] > games[1] else 2,
+                    "PointServer": point_server
+                }, ignore_index=True)
+            point_no += 1
+    return output_df
 
 if __name__ == "__main__":
     main()
