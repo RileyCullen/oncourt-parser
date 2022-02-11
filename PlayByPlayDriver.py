@@ -4,6 +4,7 @@ import pandas as pd
 
 from OnCourtDriver import get_file_paths, clean_player_name
 from parsers.PlayParser import parse_entry
+from progress_bar.ProgressBar import update_progress
 
 def main():
     """
@@ -111,6 +112,7 @@ def get_play_data(df: pd.DataFrame):
 
         df_play = parse_entry(row[15])
         frames.append(parse_play_dataframe(df_play, entry_key))
+        update_progress(i / len(df.index))
 
     return pd.concat(frames)
 
