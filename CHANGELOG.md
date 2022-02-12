@@ -1,4 +1,9 @@
 # Change Log
+## [v0.1.0] - 2022-02-11
+### Added 
+* PlayByPlay driver defined and implemented
+### Changed
+* PlayParser output format updated. Now writes "EndGame" when game is finished and "EndSet" when a set is finished
 ## [v0.0.3] - 2022-01-28
 ### Added
 * Play-by-play parser integrated into system
