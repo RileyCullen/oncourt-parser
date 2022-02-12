@@ -142,11 +142,11 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
     A Pandas.DataFrame containing the above information.
     """ 
     output_columns = ["Key", "SetNo", "P1GamesWon", "P2GamesWon", "SetWinner", 
-        "GameNo", "GameWinner", "PointNumber", "PointWinner", "PointServer"]
+        "GameNo", "GameWinner", "PointNumber", "PointWinner", "PointServer", "Score"]
     output_df = pd.DataFrame(columns=output_columns)
     output_df = output_df.iloc[1:]
 
-    set_no = 0
+    set_no = 1
     game_no = 0
     point_no = 0
     point_server = 0
@@ -161,15 +161,31 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                     "SetNo": set_no,
                     "P1GamesWon": set_games[0],
                     "P2GamesWon": set_games[1],
+                    "SetWinner": 0,
+                    "GameNo": game_no,
+                    "GameWinner": set_winner,
+                    "PointNumber": point_no, 
+                    "PointWinner": set_winner,
+                    "PointServer": point_server,
+                    "Score": row[0],
+                }, ignore_index=True)
+                game_no += 1
+            elif (row[0] == "EndSet" ):
+                output_df = output_df.append({
+                    "Key": key,
+                    "SetNo": set_no,
+                    "P1GamesWon": set_games[0],
+                    "P2GamesWon": set_games[1],
                     "SetWinner": set_winner,
                     "GameNo": game_no,
                     "GameWinner": set_winner,
                     "PointNumber": point_no, 
                     "PointWinner": set_winner,
-                    "PointServer": point_server
+                    "PointServer": point_server,
+                    "Score": row[1]
                 }, ignore_index=True)
+                game_no = 0
                 set_no += 1
-                game_no = 1
             else:
                 remove_brackets = row[0].replace("[", "").replace("]", "")
                 point_server = 1 if (remove_brackets.index('*') == 0) else 2
@@ -183,10 +199,11 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                     "P2GamesWon": set_games[1],
                     "SetWinner": 0,
                     "GameNo": game_no,
-                    "GameWinner": set_winner,
+                    "GameWinner": 0,
                     "PointNumber": point_no, 
                     "PointWinner": 1 if games[0] > games[1] else 2,
-                    "PointServer": point_server
+                    "PointServer": point_server,
+                    "Score": row[0],
                 }, ignore_index=True)
             point_no += 1
     return output_df
