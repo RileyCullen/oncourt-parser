@@ -24,7 +24,8 @@ def parse_entry(entry: str) -> pd.DataFrame:
     SetScore = "0-0"
     check = True
     
-
+    curr_set = 0
+    helper = 0
 
     def updateMatchScore():  
         nonlocal MatchScoreL
@@ -46,12 +47,16 @@ def parse_entry(entry: str) -> pd.DataFrame:
             matchData.loc[matchData_length] = [token,SetScore, str(MatchScoreL) + "-" + str(MatchScoreR)]
             check = True
         else:
+            helper += 1
             if token == "0-0":
                 updateMatchScore()
-            elif(check):
+                curr_set += 1 
+                helper = 0
+            elif(check and helper == curr_set):
                 matchData_length = len(matchData)
-                matchData.loc[matchData_length] = ["EndGame",SetScore, str(MatchScoreL) + "-" + str(MatchScoreR)]
+                matchData.loc[matchData_length] = ["EndGame",token, str(MatchScoreL) + "-" + str(MatchScoreR)]
                 check = False
+                helper = 0
             SetScore = token
     return matchData
 
