@@ -183,7 +183,7 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                     "PointNumber": point_no, 
                     "PointWinner": set_winner,
                     "PointServer": point_server,
-                    "Score": row[1]
+                    "Score": row[0]
                 }, ignore_index=True)
                 game_no = 0
                 set_no += 1
