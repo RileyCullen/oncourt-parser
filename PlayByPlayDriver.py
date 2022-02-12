@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, time, re
 import pandas as pd
 
 from OnCourtDriver import get_file_paths, clean_player_name
@@ -109,8 +109,9 @@ def get_play_data(df: pd.DataFrame):
         date = str(row[3])[0:10]
         entry_key = p1_name + " " + p2_name + " " + date
 
-        df_play = parse_entry(row[15])
-        frames.append(parse_play_dataframe(df_play, entry_key))
+        if (isinstance(row[15], str) and not re.match("\s+", row[15])):
+            df_play = parse_entry(row[15])
+            frames.append(parse_play_dataframe(df_play, entry_key))
         update_progress(i / len(df.index))
 
     return pd.concat(frames)
@@ -209,4 +210,6 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
     return output_df
 
 if __name__ == "__main__":
+    start = time.time()
     main()
+    print("Elapsed time: " + str(time.time() - start))
