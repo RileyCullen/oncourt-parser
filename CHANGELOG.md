@@ -1,4 +1,7 @@
 # Change Log
+## [v0.1.1] - 2022-02-14
+### Changed
+* Issue number 5 (bug where square brackets are written to output file) fixed
 ## [v0.1.0] - 2022-02-11
 ### Added 
 * PlayByPlay driver defined and implemented
