@@ -187,11 +187,18 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                 }, ignore_index=True)
                 game_no = 0
                 set_no += 1
+            elif (row[0] == "End"):
+                pass
             else:
                 remove_brackets = row[0].replace("[", "").replace("]", "")
-                point_server = 1 if (remove_brackets.index('*') == 0) else 2
+                point_server = 2
                 remove_asterisk = remove_brackets.replace("*", "")
                 games = remove_asterisk.split("-")
+
+                try:
+                    if (remove_brackets.index('*') == 0): point_server = 1
+                except ValueError:
+                    point_server = -1
 
                 output_df = output_df.append({
                     "Key": key,
