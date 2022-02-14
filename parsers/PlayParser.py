@@ -39,7 +39,7 @@ def parse_entry(entry: str) -> pd.DataFrame:
 
 
     for token in gameData:
-        if "*" in token:   
+        if "*" in token or ('[' in token and ']' in token):   
             matchData_length = len(matchData)
             matchData.loc[matchData_length] = [token,SetScore, str(MatchScoreL) + "-" + str(MatchScoreR)]
             check = True
