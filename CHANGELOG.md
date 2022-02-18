@@ -1,4 +1,8 @@
 # Change Log
+## [v0.1.2] - 2022-02-17
+Minor patch, issue number 6 (where parser fails on certain inputs) fixed
+### Changed
+* End cases added to PlayParser and PlayByPlayDriver. For the PlayParser, end case no longer calls updateMatchScore
 ## [v0.1.1] - 2022-02-14
 ### Changed
 * Issue number 5 (bug where square brackets are written to output file) fixed
