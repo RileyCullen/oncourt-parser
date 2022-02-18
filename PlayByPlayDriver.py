@@ -188,7 +188,20 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                 game_no = 0
                 set_no += 1
             elif (row[0] == "End"):
-                pass
+                output_df = output_df.append({
+                    "Key": key,
+                    "SetNo": set_no,
+                    "P1GamesWon": set_games[0],
+                    "P2GamesWon": set_games[1],
+                    "SetWinner": set_winner,
+                    "GameNo": game_no,
+                    "GameWinner": set_winner,
+                    "PointNumber": 0, 
+                    "PointWinner": set_winner,
+                    "PointServer": point_server,
+                    "Score": row[0]
+                }, ignore_index=True)
+                game_no = 1
             else:
                 remove_brackets = row[0].replace("[", "").replace("]", "")
                 point_server = 2
