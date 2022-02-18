@@ -148,7 +148,7 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
     output_df = output_df.iloc[1:]
 
     set_no = 1
-    game_no = 0
+    game_no = 1
     point_no = 0
     point_server = 0
 
@@ -185,7 +185,7 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                     "PointServer": point_server,
                     "Score": row[0]
                 }, ignore_index=True)
-                game_no = 0
+                game_no = 1
                 set_no += 1
             elif (row[0] == "End"):
                 output_df = output_df.append({
