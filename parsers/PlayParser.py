@@ -44,9 +44,10 @@ def parse_entry(entry: str) -> pd.DataFrame:
             matchData.loc[matchData_length] = [token,SetScore, str(MatchScoreL) + "-" + str(MatchScoreR)]
             check = True
         elif token == "End" :
-            updateMatchScore()
+            if (MatchScoreL > MatchScoreR): MatchScoreL += 1
+            else: MatchScoreR += 1
             matchData_length = len(matchData)
-            matchData.loc[matchData_length] = [token,SetScore, str(MatchScoreL) + "-" + str(MatchScoreR)]
+            matchData.loc[matchData_length - 1] = [token,SetScore, str(MatchScoreL) + "-" + str(MatchScoreR)]
             check = True
         else:
             helper += 1
