@@ -151,6 +151,7 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
     game_no = 1
     point_no = 0
     point_server = 0
+    prev_points = 0
 
     for i, row in df.iterrows():
         set_games = row[1].split("-")
@@ -171,6 +172,7 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                     "Score": row[0],
                 }, ignore_index=True)
                 game_no += 1
+                prev_points = 0
             elif (row[0] == "EndSet" ):
                 output_df = output_df.append({
                     "Key": key,
@@ -187,6 +189,7 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                 }, ignore_index=True)
                 game_no = 1
                 set_no += 1
+                prev_points = 0
             elif (row[0] == "End"):
                 output_df = output_df.append({
                     "Key": key,
@@ -202,6 +205,7 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                     "Score": row[0]
                 }, ignore_index=True)
                 game_no = 1
+                prev_points = 0
             else:
                 remove_brackets = row[0].replace("[", "").replace("]", "")
                 point_server = 2
@@ -213,6 +217,12 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                 except ValueError:
                     point_server = -1
 
+                point_winner = 0
+                if (prev_points == 0):
+                    point_winner = 1 if games[0] > games[1] else 2
+                else:
+                    point_winner = 1 if games[0] > prev_points[0] else 2
+                prev_points = games
                 output_df = output_df.append({
                     "Key": key,
                     "SetNo": set_no,
@@ -222,7 +232,7 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                     "GameNo": game_no,
                     "GameWinner": 0,
                     "PointNumber": point_no, 
-                    "PointWinner": 1 if games[0] > games[1] else 2,
+                    "PointWinner": point_winner,
                     "PointServer": point_server,
                     "Score": row[0],
                 }, ignore_index=True)
