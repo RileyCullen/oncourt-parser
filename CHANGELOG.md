@@ -1,4 +1,8 @@
 # Change Log
+## [v0.1.3] - 2022-02-17
+Minor patch, issue number 7 fixed
+### Changed
+* PlayByPlayDriver now considers difference from current point score when compared to previous point score when determining the point winner
 ## [v0.1.2] - 2022-02-17
 Minor patch, issue number 6 (where parser fails on certain inputs) fixed
 ### Changed
