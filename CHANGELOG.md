@@ -1,4 +1,9 @@
 # Change Log
+## [v0.1.4] - 2022-02-23
+Minor patch, issues 9 and 11 fixed
+### Changed
+* Special case for calculating point winner when the current frame is the frame after p2 had an advantage (A) and p1 scores (i.e. \[40-A\] -> \[40-40\])
+* Point number counter only increments on actual point entries
 ## [v0.1.3] - 2022-02-21
 Minor patch, issue number 7 fixed
 ### Changed
