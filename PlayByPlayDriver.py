@@ -221,7 +221,10 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                 if (prev_points == 0):
                     point_winner = 1 if games[0] > games[1] else 2
                 else:
-                    point_winner = 1 if games[0] > prev_points[0] else 2
+                    if (prev_points[1] == 'A'):
+                        point_winner = 2 if games[1] > prev_points[1] else 1
+                    else:
+                        point_winner = 1 if games[0] > prev_points[0] else 2
                 prev_points = games
                 output_df = output_df.append({
                     "Key": key,
