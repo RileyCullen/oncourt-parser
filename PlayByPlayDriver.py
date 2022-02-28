@@ -4,6 +4,7 @@ import pandas as pd
 from OnCourtDriver import get_file_paths, clean_player_name
 from parsers.PlayParser import parse_entry
 from progress_bar.ProgressBar import update_progress
+from verifiers.PlayVerifier import verify_play_by_play_data
 
 def main():
     """
@@ -100,6 +101,7 @@ def get_play_data(df: pd.DataFrame):
     A Pandas.DataFrame containing usable data obtained from the play parser.
     """
     frames = []
+    logs = []
     for i, row in df.iterrows():
         # Run PlayParser
         # Call function to parse output of PlayParser
@@ -111,8 +113,12 @@ def get_play_data(df: pd.DataFrame):
 
         if (isinstance(row[15], str) and not re.match("\s+", row[15])):
             df_play = parse_entry(row[15])
+            logs += verify_play_by_play_data(df_play, entry_key)
             frames.append(parse_play_dataframe(df_play, entry_key))
         update_progress(i / len(df.index))
+
+    for entry in logs:
+        print(entry)
 
     return pd.concat(frames)
 
