@@ -117,6 +117,7 @@ def get_play_data(df: pd.DataFrame):
             frames.append(parse_play_dataframe(df_play, entry_key))
         update_progress(i / len(df.index))
 
+    print (str(len(logs)) + " errors found...")
     for entry in logs:
         print(entry)
 
