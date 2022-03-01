@@ -1,6 +1,6 @@
 import pandas as pd
 from verifiers.PointVerifier import PointVerifier
-from VerificationStatus import Status
+from verifiers.VerificationStatus import Status
 
 def verify_play_by_play_data(play_df: pd.DataFrame, key: str):
     """
@@ -26,7 +26,7 @@ def verify_play_by_play_data(play_df: pd.DataFrame, key: str):
     logger = []
 
     for i, row in play_df.iterrows():
-        if (row[0] != 'EndGame' or row[0] != 'EndSet' or row[0] != 'End'):
+        if (row[0] != 'EndGame' and row[0] != 'EndSet' and row[0] != 'End'):
             # Remove the square brackets and asterisk from data. Split by '-'
             point_data = row[0].replace("[", "").replace("]", "")
             if (point_data.count("*") > 0):
