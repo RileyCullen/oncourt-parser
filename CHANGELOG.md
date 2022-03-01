@@ -1,4 +1,8 @@
 # Change Log
+## [v0.2.0] - 2022-02-28
+Data verification module added
+### Added
+* AVerifier, PlayVerifier, PointVerifier, and VerificationStatus types defined and implemented
 ## [v0.1.4] - 2022-02-23
 Minor patch, issues 9 and 11 fixed
 ### Changed
