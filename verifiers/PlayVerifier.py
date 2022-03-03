@@ -24,6 +24,7 @@ def verify_play_by_play_data(play_df: pd.DataFrame, key: str):
     """
     point_verifier = PointVerifier()
     logger = []
+    point_num = 0
 
     for i, row in play_df.iterrows():
         if (row[0] != 'EndGame' and row[0] != 'EndSet' and row[0] != 'End'):
@@ -38,12 +39,16 @@ def verify_play_by_play_data(play_df: pd.DataFrame, key: str):
             if (point_status != Status.SUCCESS):
                 entry = {
                     'key': key,
-                    'location': point_verifier.get_timestamp(),
-                    'type': Status.INVALID_PROGRESSION
+                    'location': {
+                        'point_num': [point_num - 1, point_num]
+                    },
+                    'type': point_status
                 }
                 logger.append(entry)
+            
+            point_num += 1
         else:
-            # Add end verification here 
+            point_verifier.reset()
             pass
     
     return logger
