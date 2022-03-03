@@ -102,11 +102,9 @@ class PointVerifier(AVerifier):
 
         prev_point = self._p1_score if player == 1 else self._p2_score
 
-        if prev_point == '0': return (curr_point == '0' or curr_point == '15')
+        if prev_point == '0': return (curr_point == '0' or curr_point == '15' or curr_point == '1')
         elif prev_point == '15': return (curr_point == '15' or curr_point == '30')
         elif prev_point == '30': return (curr_point == '30' or curr_point == '40')
         elif prev_point == '40': return (curr_point == '40' or curr_point == 'A')
-        elif prev_point == 'A': return (curr_point == '40')
-        # Add cases for tie breaker 
-
-        return False
+        elif prev_point == 'A': return (curr_point == '40') 
+        else: return (curr_point == prev_point or int(curr_point) == int(prev_point) + 1)
