@@ -4,11 +4,24 @@ from verifiers.VerificationStatus import Status
 
 class PointVerifier(AVerifier):
     def __init__(self) -> None:
-        self._p1_score = '0'
-        self._p2_score = '0'
+        self._p1_score = "0"
+        self._p2_score = "0"
 
-        self._set_no = 0
-        self._game_no = 0
+        self._has_reset = False
+
+        self._prev_p1_score = "0"
+        self._prev_p2_score = "0"
+
+    def reset(self):
+        """
+        The purpose of this function is to reset the PointVerifier after a match
+        has concluded.
+        """
+        self._has_reset = True
+        self._prev_p1_score = self._p1_score
+        self._prev_p2_score = self._p2_score
+        self._p1_score = "0"
+        self._p2_score = "0"
 
     def verify(self, tokens) -> Status:
         """
@@ -32,9 +45,11 @@ class PointVerifier(AVerifier):
 
         self._p1_score = p1_curr_score
         self._p2_score = p2_curr_score
+        self._has_reset = False
 
-        if (verify_change and verify_point): return Status.SUCCESS
-        return Status.INVALID_PROGRESSION
+        if (not verify_change): return Status.INVALID_CHANGE
+        if (not verify_point): return Status.INVALID_PROGRESSION
+        return Status.SUCCESS
     
     def get_timestamp(self) -> dict:
         """
@@ -65,6 +80,7 @@ class PointVerifier(AVerifier):
         --------
         Returns a boolean indicating if only one score has changed.
         """
+        if (self._has_reset): return True
         return (p1_score == self._p1_score and p2_score != self._p2_score) or \
             (p1_score != self._p1_score and p2_score == self._p2_score)
 
