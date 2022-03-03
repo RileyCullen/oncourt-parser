@@ -1,9 +1,10 @@
-import sys, os, time, re
+import sys, os, time, re, json
 import pandas as pd
 
 from OnCourtDriver import get_file_paths, clean_player_name
 from parsers.PlayParser import parse_entry
 from progress_bar.ProgressBar import update_progress
+from verifiers.PlayVerifier import verify_play_by_play_data
 
 def main():
     """
@@ -55,15 +56,20 @@ def run(input_path: str, output_path: str):
     files = get_file_paths(input_path)
     # Output - an array of Pandas.DataFrames
     output = []
+    log = None
     i = 1
     for file_path in files:
         print("Parsing " + file_path + " (" + str(i) + "/" + str(len(files)) + ")")
         file_contents = open_file(file_path)
-        output.append(get_play_data(file_contents))
+        return_data, log = get_play_data(file_contents)
+        output.append(return_data)
     
     os.mkdir(output_path)
     for data in output:
         data.to_excel(output_path +"/out.xlsx", index=False)
+        if (log != None and log != []):
+            with open(output_path + "/logs.json", 'w') as f:
+                json.dump(log, f, ensure_ascii=False, indent=4)
 
 def open_file(path: str) -> pd.DataFrame:
     """
@@ -100,6 +106,7 @@ def get_play_data(df: pd.DataFrame):
     A Pandas.DataFrame containing usable data obtained from the play parser.
     """
     frames = []
+    logs = []
     for i, row in df.iterrows():
         # Run PlayParser
         # Call function to parse output of PlayParser
@@ -111,10 +118,15 @@ def get_play_data(df: pd.DataFrame):
 
         if (isinstance(row[15], str) and not re.match("\s+", row[15])):
             df_play = parse_entry(row[15])
+            logs += verify_play_by_play_data(df_play, entry_key)
             frames.append(parse_play_dataframe(df_play, entry_key))
         update_progress(i / len(df.index))
 
-    return pd.concat(frames)
+    print (str(len(logs)) + " errors found...")
+    for entry in logs:
+        print(entry)
+
+    return pd.concat(frames), logs
 
 def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
     """
