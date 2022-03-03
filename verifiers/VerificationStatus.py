@@ -1,5 +1,5 @@
-from enum import Enum, auto
-class Status(Enum):
+from enum import IntEnum, auto
+class Status(IntEnum):
     """
     SUCCESS: Verifier ran without running into errors in the data.
 
