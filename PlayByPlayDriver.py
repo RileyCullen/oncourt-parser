@@ -67,7 +67,7 @@ def run(input_path: str, output_path: str):
     os.mkdir(output_path)
     for data in output:
         data.to_excel(output_path +"/out.xlsx", index=False)
-        if (log != None):
+        if (log != None and log != []):
             with open(output_path + "/logs.json", 'w') as f:
                 json.dump(log, f, ensure_ascii=False, indent=4)
 
