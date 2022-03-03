@@ -1,4 +1,4 @@
-import sys, os, time, re
+import sys, os, time, re, json
 import pandas as pd
 
 from OnCourtDriver import get_file_paths, clean_player_name
@@ -56,15 +56,20 @@ def run(input_path: str, output_path: str):
     files = get_file_paths(input_path)
     # Output - an array of Pandas.DataFrames
     output = []
+    log = None
     i = 1
     for file_path in files:
         print("Parsing " + file_path + " (" + str(i) + "/" + str(len(files)) + ")")
         file_contents = open_file(file_path)
-        output.append(get_play_data(file_contents))
+        return_data, log = get_play_data(file_contents)
+        output.append(return_data)
     
     os.mkdir(output_path)
     for data in output:
         data.to_excel(output_path +"/out.xlsx", index=False)
+        if (log != None):
+            with open(output_path + "/logs.json", 'w') as f:
+                json.dump(log, f, ensure_ascii=False, indent=4)
 
 def open_file(path: str) -> pd.DataFrame:
     """
@@ -121,7 +126,7 @@ def get_play_data(df: pd.DataFrame):
     for entry in logs:
         print(entry)
 
-    return pd.concat(frames)
+    return pd.concat(frames), logs
 
 def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
     """
