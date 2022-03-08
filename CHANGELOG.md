@@ -1,4 +1,9 @@
 # Change Log
+## [v0.2.1] - 2022-03-07
+### Added
+* ServerVerifier type defined and implemented
+### Changed
+* PlayVerifier updated to use ServerVerifier type
 ## [v0.2.0] - 2022-02-28
 Data verification module added
 ### Added
