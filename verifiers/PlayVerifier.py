@@ -42,12 +42,13 @@ def verify_play_by_play_data(play_df: pd.DataFrame, key: str):
                 if (not server_verifier.is_server_initialized()):
                     server_verifier.set_server(server)
 
-                server_status = server_verifier.verify([server])
+                server_status = server_verifier.verify([int(server)])
 
                 point_data = point_data.replace("*", "")
             point_tokens = point_data.split("-")
 
-            if (is_tie_breaker and int(point_tokens[0]) + int(point_tokens[1])):
+            if (is_tie_breaker and \
+                (int(point_tokens[0]) + int(point_tokens[1])) % 2 == 0):
                 server_verifier.change_server()
 
             point_status = point_verifier.verify(point_tokens)
@@ -83,10 +84,12 @@ def verify_play_by_play_data(play_df: pd.DataFrame, key: str):
             
             point_num += 1
         else:
+            if (server_verifier.is_server_initialized() and not is_tie_breaker):
+                server_verifier.change_server()
+
             if (is_tie_breaker): is_tie_breaker = False
             if (row[1] == "6-6"): is_tie_breaker = True
 
             point_verifier.reset()
-            server_verifier.change_server()
     
     return logger
