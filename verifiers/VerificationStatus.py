@@ -13,3 +13,5 @@ class Status(IntEnum):
     SUCCESS = auto()
     INVALID_PROGRESSION = auto()
     INVALID_CHANGE = auto()
+    INVALID_SERVER = auto()
+    NO_SERVER_ENTRY = auto()
