@@ -1,4 +1,11 @@
 # Change Log
+## [v1.0.0] - 2022-04-15
+Major changes to parser output
+## Added 
+* GameStatus column added. This contains values like "In-progress", "EndGame", "EndSet", and "End"
+* Screw up score added
+## Changed
+* Score broken down into P1Score and P2Score
 ## [v0.2.1] - 2022-03-07
 ### Added
 * ServerVerifier type defined and implemented
