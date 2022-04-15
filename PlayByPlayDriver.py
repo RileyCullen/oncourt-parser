@@ -107,6 +107,7 @@ def get_play_data(df: pd.DataFrame):
     """
     frames = []
     logs = []
+    total_entries = 0
     for i, row in df.iterrows():
         # Run PlayParser
         # Call function to parse output of PlayParser
@@ -118,13 +119,15 @@ def get_play_data(df: pd.DataFrame):
 
         if (isinstance(row[15], str) and not re.match("\s+", row[15])):
             df_play = parse_entry(row[15])
+            total_entries += len(df_play)
             logs += verify_play_by_play_data(df_play, entry_key)
             frames.append(parse_play_dataframe(df_play, entry_key))
         update_progress(i / len(df.index))
 
-    print (str(len(logs)) + " errors found...")
+    screw_up_score = 1 - (len(logs) / total_entries)
     for entry in logs:
         print(entry)
+    print("Data Integrity: " + str(screw_up_score))     
 
     return pd.concat(frames), logs
 
