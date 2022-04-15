@@ -155,7 +155,8 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
     A Pandas.DataFrame containing the above information.
     """ 
     output_columns = ["Key", "SetNo", "P1GamesWon", "P2GamesWon", "SetWinner", 
-        "GameNo", "GameWinner", "PointNumber", "PointWinner", "PointServer", "Score"]
+        "GameNo", "GameWinner", "PointNumber", "PointWinner", "PointServer", 
+        "P1Score", "P2Score", "GameStatus"]
     output_df = pd.DataFrame(columns=output_columns)
     output_df = output_df.iloc[1:]
 
@@ -181,7 +182,9 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                     "PointNumber": 0, 
                     "PointWinner": set_winner,
                     "PointServer": point_server,
-                    "Score": row[0],
+                    "P1Score": 0,
+                    "P2Score": 0,
+                    "GameStatus": row[0]
                 }, ignore_index=True)
                 game_no += 1
                 prev_points = 0
@@ -197,7 +200,9 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                     "PointNumber": 0, 
                     "PointWinner": set_winner,
                     "PointServer": point_server,
-                    "Score": row[0]
+                    "P1Score": 0,
+                    "P2Score": 0,
+                    "GameStatus": row[0]
                 }, ignore_index=True)
                 game_no = 1
                 set_no += 1
@@ -214,7 +219,9 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                     "PointNumber": 0, 
                     "PointWinner": set_winner,
                     "PointServer": point_server,
-                    "Score": row[0]
+                    "P1Score": 0,
+                    "P2Score": 0,
+                    "GameStatus": row[0]
                 }, ignore_index=True)
                 game_no = 1
                 prev_points = 0
@@ -249,7 +256,9 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                     "PointNumber": point_no, 
                     "PointWinner": point_winner,
                     "PointServer": point_server,
-                    "Score": row[0],
+                    "P1Score": games[0],
+                    "P2Score": games[1],
+                    "GameStatus": 'In-progress'
                 }, ignore_index=True)
                 point_no += 1
     return output_df
