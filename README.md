@@ -15,4 +15,4 @@ Both of these dependecies can be installed using pip, or any other package manag
 ### OnCourt Driver
 To run the program, make sure you are in the directory where the driver script resides. Then, in the terminal (or command line), enter `python OnCourtDriver.py [input path] [output folder]`. This will then cause the driver to open all the of the files specified by [input path] and then output the cleaned data as a json file to [output path]. Note that [output path] should be unique (i.e. it does not already exist).
 ### PlayByPlay Driver
-In the directory where the script resides, enter `python PlayByPlayDriver.py [input path] [output path]`.
+The PlayByPlay driver is responsible for obtaining play-by-play data from a given match. To run the script, in the directory where it resides, enter `python PlayByPlayDriver.py [input path] [output path]`.
