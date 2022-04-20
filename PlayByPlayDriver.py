@@ -1,4 +1,4 @@
-import sys, os, time, re, json
+import os, time, re, json, argparse
 import pandas as pd
 
 from OnCourtDriver import get_file_paths, clean_player_name
@@ -17,16 +17,43 @@ def main():
     python PlayByPlayDriver.py [input_file/input_path] [output_path]
     """
     try: 
-        if (len(sys.argv) != 3):
-            raise SyntaxError("Invalid input arguments. Input command should be \
-                python PlayByPlayDriver.py [input_file/input_path] [output_path]\
-                ")
-        if (not os.path.exists(sys.argv[1])):
-            raise FileNotFoundError(sys.argv[1] + " does not exist")
-        if (os.path.exists(sys.argv[2])):
-            raise FileExistsError(sys.argv[2] + " already exists")
+        arg_parser = argparse.ArgumentParser()
+        subparser = arg_parser.add_subparsers(help="Write to .xlsx file or \
+            database (db)", dest='command')
+
+        # Create arguments for xlsx option
+        xlsx_parser = subparser.add_parser('xlsx', help='xlsx help')
+        xlsx_parser.add_argument("-i", "--inpath", help="Input path for file \
+            that needs to be parsed", required=True, default=None)
+        xlsx_parser.add_argument("-o", "--outpath", help="Output path", \
+            required=True, default=None)
+
+        # Create arguments for db option
+        db_parser = subparser.add_parser('db', help='db help')
+        db_parser.add_argument("-i", "--inpath", help="Input path for file \
+            that needs to be parsed", required=True, default=None)
+        db_parser.add_argument("-u", "--username", help="Username for DB connec\
+            tion", required=True, default=None)
+        db_parser.add_argument("-s", "--server", help="Username for DB connec\
+            tion", required=False, default='tennismodelling.database.windows.net')
+        db_parser.add_argument("-db", "--database", help="Username for DB connec\
+            tion", required=False, default='TennisModelling')
+        db_parser.add_argument("-dr", "--driver", help="Username for DB connec\
+            tion", required=False, default='{ODBC Driver 17 for SQL Server}')
+
+        args = arg_parser.parse_args()
+        if (args.command == 'xlsx'):
+            if (os.path.exists(args.outpath)):
+                raise FileNotFoundError(args.outpath + " already exists")
+        elif (args.command == 'db'):
+            raise Exception("Not supported yet! Sorry")
+        else:
+            raise Exception("Need to specify xlsx or db")
         
-        run(sys.argv[1], sys.argv[2])
+        # Check to see if input path exists
+        if (not os.path.exists(args.inpath)):
+            raise FileNotFoundError(args.inpath + " does not exist")
+        run(args.inpath, args.outpath)
 
     except SyntaxError as e:
         print(e)
