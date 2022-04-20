@@ -6,6 +6,7 @@ Major changes to parser output
 * Screw up score added
 ## Changed
 * Score broken down into P1Score and P2Score
+* clean_player_name in OnCourtDriver updated to remove multiple digits from player's name
 ## [v0.2.1] - 2022-03-07
 ### Added
 * ServerVerifier type defined and implemented

@@ -1,4 +1,4 @@
-import os, sys, json
+import os, sys, json, re
 import pandas as pd
 from parsers.OddsParser import parse_entry as parse_odds
 from parsers.PlayParser import parse_entry as parse_play
@@ -147,10 +147,7 @@ def clean_player_name(name: str) -> str:
     -------------
     This function returns a cleaned version of the player's name.
     """
-    for letter in name:
-        if (letter.isdigit()):
-            return name.replace("({0}) ".format(letter), "")
-    return name
+    return re.sub('\(\d+\)', '', name)
 
 if __name__ == "__main__":
     main()
