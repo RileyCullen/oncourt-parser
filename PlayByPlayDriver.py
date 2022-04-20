@@ -135,6 +135,11 @@ def get_play_data(df: pd.DataFrame):
     frames = []
     logs = []
     total_entries = 0
+
+    output_columns = ["Key", "SetNo", "P1GamesWon", "P2GamesWon", "SetWinner", 
+        "GameNo", "GameWinner", "PointNumber", "PointWinner", "PointServer", 
+        "P1Score", "P2Score", "GameStatus"]
+
     for i, row in df.iterrows():
         # Run PlayParser
         # Call function to parse output of PlayParser
@@ -148,7 +153,14 @@ def get_play_data(df: pd.DataFrame):
             df_play = parse_entry(row[15])
             total_entries += len(df_play)
             logs += verify_play_by_play_data(df_play, entry_key)
-            frames.append(parse_play_dataframe(df_play, entry_key))
+
+            output_df = pd.DataFrame(columns=output_columns)
+            output_df = output_df.iloc[1:]
+
+            for entry in parse_play_dataframe(df_play, entry_key):
+                output_df = output_df.append(entry, ignore_index=True)
+
+            frames.append(output_df)
         update_progress(i / len(df.index))
 
     screw_up_score = 1 - (len(logs) / total_entries)
@@ -182,13 +194,8 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
 
     Returns:
     --------
-    A Pandas.DataFrame containing the above information.
+    A dictionary containg the above attributes.
     """ 
-    output_columns = ["Key", "SetNo", "P1GamesWon", "P2GamesWon", "SetWinner", 
-        "GameNo", "GameWinner", "PointNumber", "PointWinner", "PointServer", 
-        "P1Score", "P2Score", "GameStatus"]
-    output_df = pd.DataFrame(columns=output_columns)
-    output_df = output_df.iloc[1:]
 
     set_no = 1
     game_no = 1
@@ -201,7 +208,7 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
         if (len(set_games) == 2):
             set_winner = 1 if set_games[0] > set_games[1] else 2
             if (row[0] == "EndGame"):
-                output_df = output_df.append({
+                yield {
                     "Key": key,
                     "SetNo": set_no,
                     "P1GamesWon": set_games[0],
@@ -215,11 +222,11 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                     "P1Score": 0,
                     "P2Score": 0,
                     "GameStatus": row[0]
-                }, ignore_index=True)
+                } 
                 game_no += 1
                 prev_points = 0
             elif (row[0] == "EndSet" ):
-                output_df = output_df.append({
+                yield {
                     "Key": key,
                     "SetNo": set_no,
                     "P1GamesWon": set_games[0],
@@ -233,12 +240,12 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                     "P1Score": 0,
                     "P2Score": 0,
                     "GameStatus": row[0]
-                }, ignore_index=True)
+                }
                 game_no = 1
                 set_no += 1
                 prev_points = 0
             elif (row[0] == "End"):
-                output_df = output_df.append({
+                yield {
                     "Key": key,
                     "SetNo": set_no,
                     "P1GamesWon": set_games[0],
@@ -252,7 +259,7 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                     "P1Score": 0,
                     "P2Score": 0,
                     "GameStatus": row[0]
-                }, ignore_index=True)
+                }
                 game_no = 1
                 prev_points = 0
             else:
@@ -275,7 +282,7 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                     else:
                         point_winner = 1 if games[0] > prev_points[0] else 2
                 prev_points = games
-                output_df = output_df.append({
+                yield {
                     "Key": key,
                     "SetNo": set_no,
                     "P1GamesWon": set_games[0],
@@ -289,9 +296,8 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
                     "P1Score": games[0],
                     "P2Score": games[1],
                     "GameStatus": 'In-progress'
-                }, ignore_index=True)
+                }
                 point_no += 1
-    return output_df
 
 if __name__ == "__main__":
     start = time.time()
