@@ -1,9 +1,11 @@
 # Change Log
 ## [v1.0.0] - 2022-04-15
-Major changes to parser output
+Major changes. Parser now supports writing to a database (in addition to writing to excel files). To account for this change, the parser's script arguments have been updated (see README.md)
 ## Added 
 * GameStatus column added. This contains values like "In-progress", "EndGame", "EndSet", and "End"
 * Screw up score added
+* DBConnection type defined 
+* Functions for populating database added
 ## Changed
 * Score broken down into P1Score and P2Score
 * clean_player_name in OnCourtDriver updated to remove multiple digits from player's name
