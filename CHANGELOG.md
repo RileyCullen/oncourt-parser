@@ -6,6 +6,7 @@ Major changes. Parser now supports writing to a database (in addition to writing
 * Screw up score added
 * DBConnection type defined 
 * Functions for populating database added
+* Module pyodbc added to package
 ## Changed
 * Command line arguments updated
 * Score broken down into P1Score and P2Score
