@@ -16,6 +16,10 @@ class DBConnection:
         password: str, driver: str):
         """
         Handles initializing the connection to DB.
+
+        Returns:
+        --------
+        A pyodbc connection object.
         """
         self._conn = pyodbc.connect('DRIVER='+driver+';SERVER=tcp:'+server+\
             ';PORT=1433;DATABASE='+database+';UID='+username+';PWD='+ password)
