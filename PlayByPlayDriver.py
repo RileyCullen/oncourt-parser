@@ -78,7 +78,7 @@ def main():
     except FileExistsError as e:
         print(e)
 
-    if (mode == ParseMode.DB): DBConnection.close_connection()
+    if (mode == ParseMode.DB): DBConnection().close_connection()
 
 def run(mode: ParseMode, input_path: str, args: tuple):
     """
