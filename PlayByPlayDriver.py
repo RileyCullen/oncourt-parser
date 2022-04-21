@@ -58,7 +58,7 @@ def main():
             if (os.path.exists(args.outpath)):
                 raise FileNotFoundError(args.outpath + " already exists")
             mode = ParseMode.XLSX
-            run_args = (args.outpath)
+            run_args = (args.outpath,)
         elif (args.command == 'db'):
             mode = ParseMode.DB
             DBConnection().create_connection(args.server, args.database, \
@@ -78,7 +78,7 @@ def main():
     except FileExistsError as e:
         print(e)
 
-    DBConnection.close_connection()
+    if (mode == ParseMode.DB): DBConnection.close_connection()
 
 def run(mode: ParseMode, input_path: str, args: tuple):
     """
