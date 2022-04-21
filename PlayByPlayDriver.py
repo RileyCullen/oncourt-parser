@@ -1,10 +1,17 @@
 import os, time, re, json, argparse
 import pandas as pd
 
+from enum import Enum, auto
 from OnCourtDriver import get_file_paths, clean_player_name
 from parsers.PlayParser import parse_entry
 from progress_bar.ProgressBar import update_progress
 from verifiers.PlayVerifier import verify_play_by_play_data
+from database.DBConnection import DBConnection
+from database.PopulateDB import populate_player_table, populate_in_play_data_table
+
+class ParseMode(Enum):
+    XLSX = auto()
+    DB   = auto()
 
 def main():
     """
@@ -34,6 +41,8 @@ def main():
             that needs to be parsed", required=True, default=None)
         db_parser.add_argument("-u", "--username", help="Username for DB connec\
             tion", required=True, default=None)
+        db_parser.add_argument("-p", "--password", help="Password for DB access",
+            required=True, default=None)
         db_parser.add_argument("-s", "--server", help="Username for DB connec\
             tion", required=False, default='tennismodelling.database.windows.net')
         db_parser.add_argument("-db", "--database", help="Username for DB connec\
@@ -42,18 +51,25 @@ def main():
             tion", required=False, default='{ODBC Driver 17 for SQL Server}')
 
         args = arg_parser.parse_args()
+
+        mode = None
+        run_args = None
         if (args.command == 'xlsx'):
             if (os.path.exists(args.outpath)):
                 raise FileNotFoundError(args.outpath + " already exists")
+            mode = ParseMode.XLSX
+            run_args = (args.outpath)
         elif (args.command == 'db'):
-            raise Exception("Not supported yet! Sorry")
+            mode = ParseMode.DB
+            DBConnection().create_connection(args.server, args.database, \
+                args.username, args.password, args.driver)
         else:
             raise Exception("Need to specify xlsx or db")
         
         # Check to see if input path exists
         if (not os.path.exists(args.inpath)):
             raise FileNotFoundError(args.inpath + " does not exist")
-        run(args.inpath, args.outpath)
+        run(mode, args.inpath, run_args)
 
     except SyntaxError as e:
         print(e)
@@ -62,7 +78,9 @@ def main():
     except FileExistsError as e:
         print(e)
 
-def run(input_path: str, output_path: str):
+    DBConnection.close_connection()
+
+def run(mode: ParseMode, input_path: str, args: tuple):
     """
     This function is responsible for finding all the files specified by 'input_path',
     parsing the contents of the file, calling the PlayParser, then processing that
@@ -75,10 +93,12 @@ def run(input_path: str, output_path: str):
 
     Parameters:
     -----------
+    mode: XLSX or DB 
     input_path:  The input path denoting the file (or folder containing the 
                  files) we want to parse. Note that this can be a single file or
                  a folder containing .xlsl files.
-    output_path: The output path where we plan on storing the collected data.
+    args: If XLSX, it assumes a tuple = (output_path). If DB it assumes a tuple
+          = ().
     """
     files = get_file_paths(input_path)
     # Output - an array of Pandas.DataFrames
@@ -88,15 +108,16 @@ def run(input_path: str, output_path: str):
     for file_path in files:
         print("Parsing " + file_path + " (" + str(i) + "/" + str(len(files)) + ")")
         file_contents = open_file(file_path)
-        return_data, log = get_play_data(file_contents)
+        return_data, log = get_play_data(mode, file_contents)
         output.append(return_data)
     
-    os.mkdir(output_path)
-    for data in output:
-        data.to_excel(output_path +"/out.xlsx", index=False)
-        if (log != None and log != []):
-            with open(output_path + "/logs.json", 'w') as f:
-                json.dump(log, f, ensure_ascii=False, indent=4)
+    if (mode == ParseMode.XLSX):
+        os.mkdir(args[0])
+        for data in output:
+            data.to_excel(args[0] +"/out.xlsx", index=False)
+            if (log != None and log != []):
+                with open(args[0] + "/logs.json", 'w') as f:
+                    json.dump(log, f, ensure_ascii=False, indent=4)
 
 def open_file(path: str) -> pd.DataFrame:
     """
@@ -116,7 +137,7 @@ def open_file(path: str) -> pd.DataFrame:
     df = df.iloc[1:]
     return df
 
-def get_play_data(df: pd.DataFrame):
+def get_play_data(mode: ParseMode, df: pd.DataFrame):
     """
     Not exactly sure how this function should work, but the general idea is it
     should:
@@ -149,24 +170,41 @@ def get_play_data(df: pd.DataFrame):
         date = str(row[3])[0:10]
         entry_key = p1_name + " " + p2_name + " " + date
 
+        if (mode == ParseMode.DB):
+            conn = DBConnection().get_connection()
+            populate_player_table(conn, p1_name)
+            populate_player_table(conn, p2_name)
+
         if (isinstance(row[15], str) and not re.match("\s+", row[15])):
             df_play = parse_entry(row[15])
             total_entries += len(df_play)
             logs += verify_play_by_play_data(df_play, entry_key)
 
-            output_df = pd.DataFrame(columns=output_columns)
-            output_df = output_df.iloc[1:]
+            if (mode == ParseMode.XLSX):
+                output_df = pd.DataFrame(columns=output_columns)
+                output_df = output_df.iloc[1:]
 
-            for entry in parse_play_dataframe(df_play, entry_key):
-                output_df = output_df.append(entry, ignore_index=True)
+                for entry in parse_play_dataframe(df_play, entry_key):
+                    output_df = output_df.append(entry, ignore_index=True)
 
-            frames.append(output_df)
+                frames.append(output_df)
+            elif (mode == ParseMode.DB):
+                conn = DBConnection().get_connection()
+                for entry in parse_play_dataframe(df_play, entry_key):
+                    populate_in_play_data_table(conn, entry["Key"],
+                        entry['SetNo'], entry['P1GamesWon'], 
+                        entry['P2GamesWon'], entry['SetWinner'], 
+                        entry['GameNo'], entry['GameWinner'], 
+                        entry['PointNumber'], entry['PointWinner'],
+                        entry['PointServer'], "tmp-score")
         update_progress(i / len(df.index))
 
     screw_up_score = 1 - (len(logs) / total_entries)
     for entry in logs:
         print(entry)
     print("Data Integrity: " + str(screw_up_score))     
+
+    if frames == []: return [], logs
 
     return pd.concat(frames), logs
 
