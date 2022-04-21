@@ -11,6 +11,7 @@ Major changes. Parser now supports writing to a database (in addition to writing
 * Command line arguments updated
 * Score broken down into P1Score and P2Score
 * clean_player_name in OnCourtDriver updated to remove multiple digits from player's name
+* Function parse_play_dataframe updated to yield parse data instead of directly adding it to a DataFrame
 ## [v0.2.1] - 2022-03-07
 ### Added
 * ServerVerifier type defined and implemented
