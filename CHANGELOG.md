@@ -1,4 +1,8 @@
 # Change Log
+## [v1.1.0] - 2022-04-26
+New driver script, LSTMDriver, added.
+### Added
+* LSTMDriver added to convert PlayByPlayDriver output to LSTM-compatible format
 ## [v1.0.0] - 2022-04-15
 Major changes. Parser now supports writing to a database (in addition to writing to excel files). To account for this change, the parser's script arguments have been updated (see README.md)
 ## Added 
