@@ -60,6 +60,9 @@ def separate_games(df: pd.DataFrame) -> list:
     return tmp
 
 def convert(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Convert df to format listed in main's documentation.
+    """
     tmp_df = pd.DataFrame(columns=["P1_Given", "P1_Expected", "P2_Given", "P2_Expected"])
 
     total_p1 = 0
@@ -86,6 +89,9 @@ def convert(df: pd.DataFrame) -> pd.DataFrame:
     return tmp_df
 
 def get_scores(row: tuple) -> tuple:
+    """
+    Return player scores from df entry.
+    """
     return row[10], row[11]
 
 if __name__ == '__main__':
