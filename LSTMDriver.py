@@ -71,28 +71,35 @@ def convert(df: pd.DataFrame) -> pd.DataFrame:
     # Get only in-progress status entries
     df = df[df['GameStatus'] == 'In-progress']
 
+    updated_df = pd.DataFrame(columns=["P1", "P2"])
+
+    for i, row in df.iterrows():
+        if (row[8] == 1):
+            if (row[10] == 'A'): total_p1 += 5 
+            else: total_p1 += int(row[10])
+        elif (row[8] == 2): 
+            if (row[11] == 'A'): total_p2 += 5
+            else: total_p2 += int(row[11])
+    
+        updated_df = updated_df.append({
+            "P1": total_p1,
+            "P2": total_p2,
+        }, ignore_index = True)
+
     prev = None
     prev_toggle = False
-    
-    for i, row in df.iterrows():
+
+    for i, row in updated_df.iterrows():
         if (prev_toggle):
-            given = get_scores(prev)
-            expected = get_scores(row)
             tmp_df = tmp_df.append({
-                'P1_Given': given[0],
-                'P1_Expected': expected[0],
-                'P2_Given': given[1],
-                'P2_Expected': expected[1],
+                'P1_Given': prev[0],
+                'P1_Expected': row[0],
+                'P2_Given': prev[1],
+                'P2_Expected': row[1],
             }, ignore_index=True)
         else: prev_toggle = True
         prev = row
     return tmp_df
-
-def get_scores(row: tuple) -> tuple:
-    """
-    Return player scores from df entry.
-    """
-    return row[10], row[11]
 
 if __name__ == '__main__':
     main()
