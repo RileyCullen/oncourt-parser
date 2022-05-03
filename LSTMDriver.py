@@ -64,28 +64,9 @@ def convert(df: pd.DataFrame) -> pd.DataFrame:
     Convert df to format listed in main's documentation.
     """
     tmp_df = pd.DataFrame(columns=["P1_Given", "P1_Expected", "P2_Given", "P2_Expected"])
-
-    total_p1 = 0
-    total_p2 = 0
-
-    # Get only in-progress status entries
-    df = df[df['GameStatus'] == 'In-progress']
-
-    updated_df = pd.DataFrame(columns=["P1", "P2"])
-
-    for i, row in df.iterrows():
-        if (row[8] == 1):
-            if (row[10] == 'A'): total_p1 += 5 
-            else: total_p1 += int(row[10])
-        elif (row[8] == 2): 
-            if (row[11] == 'A'): total_p2 += 5
-            else: total_p2 += int(row[11])
     
-        updated_df = updated_df.append({
-            "P1": total_p1,
-            "P2": total_p2,
-        }, ignore_index = True)
-
+    updated_df = create_modified_df(df)
+    
     prev = None
     prev_toggle = False
 
@@ -100,6 +81,59 @@ def convert(df: pd.DataFrame) -> pd.DataFrame:
         else: prev_toggle = True
         prev = row
     return tmp_df
+
+def create_modified_df(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Given a dataframe with the same layout as the output from the PlayByPlay
+    driver, convert it to a dataframe that adheres to the following rules:
+        1. There exists two columns, P1 and P2, such that P1 represents player
+           one's cumulative score at a given serve and P2 represents player 
+           two's cumulative score at a given serve.
+        2. Cumulative scores will be calculated by taking the difference 
+           between the last score and the current score.
+        3. In the case of an advantage (A), a fixed value of 5 will be added
+           for each "A" entry.
+    """
+    WINNER = 50
+    ADV = 5
+
+    final_df = pd.DataFrame(columns=["P1", "P2"])
+    prev_score_p1 = 0
+    prev_score_p2 = 0
+
+    total_p1 = 0
+    total_p2 = 0
+
+    for i, row in df.iterrows():
+        if (row[12] == 'In-progress'):
+            if (row[8] == 1):
+                if (row[10] == 'A'): total_p1 += ADV
+                elif (prev_score_p2 == 'A'): total_p1 += ADV 
+                else: total_p1 += (int(row[10]) - int(prev_score_p1))
+            elif (row[8] == 2):
+                if (row[11] == 'A'): total_p2 += ADV
+                elif (prev_score_p1 == 'A'): total_p2 += ADV
+                else: total_p2 += (int(row[11]) - int(prev_score_p2))
+
+            prev_score_p1 = row[10] 
+            prev_score_p2 = row[11]
+        else:
+            prev_score_p1 = 0
+            prev_score_p2 = 0
+
+            if (row[6] == 1):
+                total_p1 += WINNER
+                total_p2 -= WINNER
+            else:
+                total_p1 -= WINNER
+                total_p2 += WINNER
+        
+        final_df = final_df.append({
+            'P1': total_p1,
+            'P2': total_p2
+        }, ignore_index=True)
+
+    return final_df
 
 if __name__ == '__main__':
     main()
