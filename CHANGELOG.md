@@ -1,17 +1,22 @@
 # Change Log
+## [v1.1.1] - 2022-05-02
+Minor changes to DB methods and update to LSTM driver
+### Changed
+* Function populate_in_play_data_table updated to adhere to new table layout.
+* Cumulative score calculation updated in LSTMDriver
 ## [v1.1.0] - 2022-04-26
 New driver script, LSTMDriver, added.
 ### Added
 * LSTMDriver added to convert PlayByPlayDriver output to LSTM-compatible format
 ## [v1.0.0] - 2022-04-15
 Major changes. Parser now supports writing to a database (in addition to writing to excel files). To account for this change, the parser's script arguments have been updated (see README.md)
-## Added 
+### Added 
 * GameStatus column added. This contains values like "In-progress", "EndGame", "EndSet", and "End"
 * Screw up score added
 * DBConnection type defined 
 * Functions for populating database added
 * Module pyodbc added to package
-## Changed
+### Changed
 * Command line arguments updated
 * Score broken down into P1Score and P2Score
 * clean_player_name in OnCourtDriver updated to remove multiple digits from player's name
