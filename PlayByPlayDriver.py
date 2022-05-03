@@ -196,7 +196,8 @@ def get_play_data(mode: ParseMode, df: pd.DataFrame):
                         entry['P2GamesWon'], entry['SetWinner'], 
                         entry['GameNo'], entry['GameWinner'], 
                         entry['PointNumber'], entry['PointWinner'],
-                        entry['PointServer'], "tmp-score")
+                        entry['PointServer'], entry['P1Score'], entry['P2Score']
+                        , entry['GameStatus'])
         update_progress(i / len(df.index))
 
     screw_up_score = 1 - (len(logs) / total_entries)
