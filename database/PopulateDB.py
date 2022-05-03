@@ -15,7 +15,7 @@ def populate_player_table(conn, PlayerName):
     cursor.execute(sql, parameters)
     conn.commit()
 
-def populate_in_play_data_table(conn, Key,SetNo,P1GamesWon,P2GamesWon,SetWinner,GameNo,GameWinner,PointNumber,PointWinner,PointServer,Score):
+def populate_in_play_data_table(conn, Key,SetNo,P1GamesWon,P2GamesWon,SetWinner,GameNo,GameWinner,PointNumber,PointWinner,PointServer,P1Score, P2Score, status):
     """
     This function populates the IN_PLAY_DATA table of the Azure SQL Database
 
@@ -24,10 +24,11 @@ def populate_in_play_data_table(conn, Key,SetNo,P1GamesWon,P2GamesWon,SetWinner,
     conn: see populate_player_table
     """
     cursor = conn.cursor()
-    sqlInsert = "INSERT INTO [IN_PLAY_DATA]([IN_PLAY_DATA_KEY], [IN_PLAY_DATA_SET_NUMBER], [IN_PLAY_DATA_PLAYER_ONE_GAMES_WON], [IN_PLAY_DATA_PLAYER_TWO_GAMES_WON],[IN_PLAY_DATA_SET_WINNER],"\
-                  +"[IN_PLAY_DATA_GAME_NUMBER], [IN_PLAY_DATA_GAME_WINNER], [IN_PLAY_DATA_POINT_NUMBER], [IN_PLAY_DATA_POINT_WINNER], [IN_PLAY_DATA_POINT_SERVER],[IN_PLAY_DATA_SCORE]) "\
-                  +"VALUES(?,?,?,?,?,?,?,?,?,?,?)"
-    parameters = (Key,SetNo,P1GamesWon,P2GamesWon,SetWinner,GameNo,GameWinner,PointNumber,PointWinner,PointServer,Score)
+    sqlInsert = "INSERT INTO [IN_PLAY_DATA]([IN_PLAY_DATA_KEY], [SET_NUMBER], [PLAYER_ONE_GAMES_WON], [PLAYER_TWO_GAMES_WON], [SET_WINNER],"\
+                  +"[GAME_NUMBER], [GAME_WINNER], [POINT_NUMBER], [POINT_WINNER], [POINT_SERVER],[PLAYER_ONE_SCORE], [PLAYER_TWO_SCORE], [GAME_STATUS]) "\
+                  +"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)"
+    parameters = (Key,SetNo,P1GamesWon,P2GamesWon,SetWinner,GameNo,GameWinner, \
+        PointNumber,PointWinner,PointServer, P1Score, P2Score, status)
     cursor.execute(sqlInsert, parameters)
     
     conn.commit()
