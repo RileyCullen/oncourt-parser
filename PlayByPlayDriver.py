@@ -242,10 +242,13 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
     point_server = 0
     prev_points = 0
 
+    prev_games_won = '0'
+
     for i, row in df.iterrows():
         set_games = row[1].split("-")
         if (len(set_games) == 2):
-            set_winner = 1 if set_games[0] > set_games[1] else 2
+            set_winner = 1 if set_games[0] > prev_games_won else 2
+            prev_games_won = set_games[0]
             if (row[0] == "EndGame"):
                 yield {
                     "Key": key,
