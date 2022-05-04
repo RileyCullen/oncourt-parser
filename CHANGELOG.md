@@ -4,6 +4,7 @@ Minor changes to DB methods and update to LSTM driver
 ### Changed
 * Function populate_in_play_data_table updated to adhere to new table layout.
 * Cumulative score calculation updated in LSTMDriver
+* Issue where PlayByPlayDriver wrote incorrect game winner fixed
 ## [v1.1.0] - 2022-04-26
 New driver script, LSTMDriver, added.
 ### Added
