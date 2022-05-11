@@ -1,4 +1,8 @@
 # Change Log
+## [v1.1.2] - 2022-05-11
+SQL script for creating IN_PLAY_DATA table added
+### Added 
+* New sql script for creating IN_PLAY_DATA table added
 ## [v1.1.1] - 2022-05-02
 Minor changes to DB methods and update to LSTM driver
 ### Changed
