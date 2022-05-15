@@ -1,4 +1,8 @@
 # Change Log
+## [v1.1.3] - 2022-05014
+### Changed
+* Identity function added to primary key for IN_PLAY_DATA
+* Bug where set_games does not remove noise fixed
 ## [v1.1.2] - 2022-05-11
 SQL script for creating IN_PLAY_DATA table added
 ### Added 
