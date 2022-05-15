@@ -249,6 +249,10 @@ def parse_play_dataframe(df: pd.DataFrame, key: str) -> pd.DataFrame:
         if (len(set_games) == 2):
             set_winner = 1 if set_games[0] > prev_games_won else 2
             prev_games_won = set_games[0]
+
+            set_games[0] = set_games[0][0]
+            set_games[1] = set_games[1][0]
+
             if (row[0] == "EndGame"):
                 yield {
                     "Key": key,
