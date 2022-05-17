@@ -7,7 +7,9 @@ from parsers.PlayParser import parse_entry
 from progress_bar.ProgressBar import update_progress
 from verifiers.PlayVerifier import verify_play_by_play_data
 from database.DBConnection import DBConnection
-from database.PopulateDB import populate_player_table, populate_in_play_data_table
+from database.PopulateDB import populate_player_table, \
+    populate_in_play_data_table, populate_tournament_table, populate_match_table
+from database.ObtainData import get_player_id, get_tournament_id, get_match_id
 
 class ParseMode(Enum):
     XLSX = auto()
@@ -161,6 +163,9 @@ def get_play_data(mode: ParseMode, df: pd.DataFrame):
         "GameNo", "GameWinner", "PointNumber", "PointWinner", "PointServer", 
         "P1Score", "P2Score", "GameStatus"]
 
+    prev_tournament_name = ""
+    tournament_id = -1
+
     for i, row in df.iterrows():
         # Run PlayParser
         # Call function to parse output of PlayParser
@@ -170,10 +175,27 @@ def get_play_data(mode: ParseMode, df: pd.DataFrame):
         date = str(row[3])[0:10]
         entry_key = p1_name + " " + p2_name + " " + date
 
+        player_one_id = -1
+        player_two_id = -1
+
+        match_id = -1
+
         if (mode == ParseMode.DB):
             conn = DBConnection().get_connection()
+            tournament_name = row[2]
+            if (prev_tournament_name == "" or prev_tournament_name != tournament_name):
+                prev_tournament_name = tournament_name
+                populate_tournament_table(conn, tournament_name)
+                tournament_id = get_tournament_id(conn, tournament_name)
+
             populate_player_table(conn, p1_name)
             populate_player_table(conn, p2_name)
+
+            player_one_id = get_player_id(conn, p1_name)
+            player_two_id = get_player_id(conn, p2_name)
+
+            populate_match_table(conn, tournament_id, player_one_id, player_two_id)
+            match_id = get_match_id(conn, tournament_id, player_one_id, player_two_id)
 
         if (isinstance(row[15], str) and not re.match("\s+", row[15])):
             df_play = parse_entry(row[15])
@@ -191,7 +213,7 @@ def get_play_data(mode: ParseMode, df: pd.DataFrame):
             elif (mode == ParseMode.DB):
                 conn = DBConnection().get_connection()
                 for entry in parse_play_dataframe(df_play, entry_key):
-                    populate_in_play_data_table(conn, entry["Key"],
+                    populate_in_play_data_table(conn, match_id,
                         entry['SetNo'], entry['P1GamesWon'], 
                         entry['P2GamesWon'], entry['SetWinner'], 
                         entry['GameNo'], entry['GameWinner'], 
