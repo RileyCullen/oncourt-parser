@@ -11,7 +11,9 @@ This program runs in Python (version 3.8.1 or above) and requires the following 
 2. pyodbc
 3. openpyxl
 
-To install the above dependencies, open the terminal and enter `pip install -r requirements.txt`.
+To install the above dependencies, open the terminal and enter `pip install -r requirements.txt`. 
+
+In addition, you may need to install additional drivers to connect to the Azure database. For installation instructions, please see the following page: https://docs.microsoft.com/en-us/sql/connect/odbc/download-odbc-driver-for-sql-server?view=sql-server-ver15. By default, this project uses **ODBC Driver 17 for SQL Server**; however, other drivers can be selected for use.
 
 ## Running the Program
 ### OnCourt Driver
