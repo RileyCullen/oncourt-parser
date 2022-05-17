@@ -1,4 +1,4 @@
--- Drop tables before creating them.
+  -- Drop tables before creating them.
 DROP TABLE IF EXISTS MATCH;
 DROP TABLE IF EXISTS TOURNAMENT;
 DROP TABLE IF EXISTS PLAYER;
