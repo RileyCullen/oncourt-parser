@@ -8,10 +8,11 @@ The PlayByPlay driver is responsible for parsing through the play-by-play data f
 ## Dependencies
 This program runs in Python (version 3.8.1 or above) and requires the following depedencies:
 1. Pandas
-2. NumPy
-3. pyodbc
+2. pyodbc
+3. openpyxl
 
-Both of these dependecies can be installed using pip, or any other package manager you prefer. For installation instructions, see each individual package's page.
+To install the above dependencies, open the terminal and enter `pip install -r requirements.txt`.
+
 ## Running the Program
 ### OnCourt Driver
 To run the program, make sure you are in the directory where the driver script resides. Then, in the terminal (or command line), enter `python OnCourtDriver.py [input path] [output folder]`. This will then cause the driver to open all the of the files specified by [input path] and then output the cleaned data as a json file to [output path]. Note that [output path] should be unique (i.e. it does not already exist).
