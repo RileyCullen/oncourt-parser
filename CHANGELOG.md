@@ -4,6 +4,7 @@ Database schema updated. PlayByPlayDriver updated to reflect changes
 ### Added 
 * SQL script to create database from scratch added
 * ObtainData.py added (holds functions that get data from database)
+* Requirements.txt file
 ### Changed
 * Functions to populate tournament and match tables implemented
 * PlayByPlayDriver updated to write to match and tournament tables. Driver also updated to obtain data and write foreign keys when required
