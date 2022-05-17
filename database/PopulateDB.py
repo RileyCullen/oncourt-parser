@@ -1,3 +1,17 @@
+def populate_tournament_table(conn, tournament_name: str) -> None:
+    """
+    This function adds a tournament to the tournament table.
+    """
+
+    sql = "INSERT INTO [TOURNAMENT](TOURNAMENT_NAME)" + \
+        "VALUES(?)" + \
+        "WHERE NOT EXISTS (SELECT [TOURNAMENT_ID] FROM [TOURNAMENT] WHERE [TOURNAMENT_NAME] = (?))"
+    parameters = (tournament_name)
+
+    cursor = conn.cursor()
+    cursor.execute(sql, parameters)
+    conn.commit()
+
 def populate_player_table(conn, PlayerName):
     """
     This function populates the PLAYER table.
