@@ -1,5 +1,13 @@
 # Change Log
-## [v1.1.3] - 2022-05014
+## [v1.2.0] - 2022-05-16
+Database schema updated. PlayByPlayDriver updated to reflect changes
+### Added 
+* SQL script to create database from scratch added
+* ObtainData.py added (holds functions that get data from database)
+### Changed
+* Functions to populate tournament and match tables implemented
+* PlayByPlayDriver updated to write to match and tournament tables. Driver also updated to obtain data and write foreign keys when required
+## [v1.1.3] - 2022-05-14
 ### Changed
 * Identity function added to primary key for IN_PLAY_DATA
 * Bug where set_games does not remove noise fixed
