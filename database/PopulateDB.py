@@ -12,6 +12,19 @@ def populate_tournament_table(conn, tournament_name: str) -> None:
     cursor.execute(sql, parameters)
     conn.commit()
 
+def populate_match_table(conn, tournament_id, player_one_id, player_two_id):
+    """
+    This function adds a match to the match table.
+    """
+
+    sql = "INSERT INTO [MATCH](TOURNAMENT_ID, PLAYER_ID_ONE, PLAYER_ID_TWO" + \
+        "VALUES(?, ?, ?)"
+    parameters = (tournament_id, player_one_id, player_two_id)
+
+    cursor = conn.cursor()
+    cursor.execute(sql, parameters)
+    conn.commit()
+
 def populate_player_table(conn, PlayerName):
     """
     This function populates the PLAYER table.
